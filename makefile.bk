@@ -9,12 +9,10 @@ TESTPROG=fson_test_driver
 F95=.f90
 OBJ=.o
 SO=.so
-AR=.a
 MOD=.mod
 EXE=
 
 LIBTARGET=$(DIST)/libfson$(SO)
-STATICLIBTARGET=$(DIST)/libfson$(AR)
 
 FC = gfortran
 FCFLAGS = -O2
@@ -23,7 +21,7 @@ FRUIT=-L$(LIB_DIR) -lfruit
 FRUITINCLS=-I$(INCL_DIR)
 
 # "make" builds all
-all: lib staticlib examples
+all: lib examples
 
 # List of example programs
 EXAMPLES = basic example1 example2
@@ -42,12 +40,7 @@ $(LIBTARGET) : $(OBJECTS)
 	mkdir -p `dirname $@`
 	$(FC) -shared -o $(LIBTARGET) $^
 
-$(STATICLIBTARGET) : $(OBJECTS)
-	mkdir -p `dirname $@`
-	ar rcv $(STATICLIBTARGET) $^
-
 lib: $(LIBTARGET)
-staticlib: $(STATICLIBTARGET)
 
 $(DIST)/%.json : $(SRC)/%.json
 	mkdir -p $(@D)
@@ -84,5 +77,4 @@ clobber: clean
 
 install : 
 	cp $(LIBTARGET) $(LIB_DIR)
-	cp $(STATICLIBTARGET) $(LIB_DIR)
 	cp $(BUILD)/*$(MOD) $(INCL_DIR)
